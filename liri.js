@@ -13,7 +13,7 @@ var spotify = new Spotify({
     id: "dcfcc95e202d4fd389ae897d17bc420e",
     secret: "2fe2ed2183884a059962bd6e57bfe2da"
 });
-var client = new Twitter(keys.twitter);
+
 
 var action = process.argv[2];
 var input_argv = process.argv[3];
@@ -50,10 +50,33 @@ function test() {
 //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$------TESTING------$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //-----------------TWITTER--------------------------------------
-function my_tweets() {
-    client.get('search/tweets', {q: 'node.js'}, function(error, tweets, response) {
-        console.log(tweets);
-     });
+function my_tweets() {  
+    var client = new Twitter({
+        consumer_key: "fWWXtFuW89K9ALfpBmyBac31Y",
+        consumer_secret: "yLajimAO4gTJhSjh5SFbRdKgEl7lZHGjlJjgU8qFYGSCigvby5",
+        access_token_key: "949006103173623809-dqhaoXNRMu22wpzCILJbdl2QawrH4PD",
+        access_token_secret: "gi11gLf7Rlya1dbuLMzpvlUGChNjAk4RWn4bifyEExvOi" 
+    });
+    //var client = new Twitter(keys.twitter);
+
+    var params = {
+        q: "#nodejs",
+        count: 20,
+        result_type: "recent",
+        lang: "en"
+    };
+    client.get("statuses/user_timeline", params, function(error, tweets, response) {
+        if (!error) {
+            console.log("------------Recent Tweets-----------------------")
+            for (var i = 0; i < tweets.length; i++) {
+                console.log(tweets[i].created_at);
+                console.log(tweets[i].text);
+                console.log("------------------------------------------------")
+            }
+        }else {
+
+        };
+    });
 }
 
 //--------------------------------SPOTIFY--------------------------------------
@@ -105,11 +128,11 @@ function movie_this() {
     }
     var inputTRIM = input.trim();
     var movieName = inputTRIM.split(" ").join("+");
-    console.log(movieName);
+    
 
     //#######################----MOVE-API-KEY-TO-ENV-FILE-----########
     var queryURL = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-    console.log(queryURL);
+    
 
     request(queryURL, function(error, response, body) {
         if (!error && response.statusCode === 200) {
