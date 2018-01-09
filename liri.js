@@ -8,11 +8,8 @@ var request = require("request");
 var fs = require("fs");
 
 //access spotify and twitter API key info
-//var spotifySearch = new Spotify(keys.spotify);
-var spotify = new Spotify({
-    id: "dcfcc95e202d4fd389ae897d17bc420e",
-    secret: "2fe2ed2183884a059962bd6e57bfe2da"
-});
+var spotify = new Spotify(keys.spotify);
+var client = new Twitter(keys.twitter);
 
 
 var action = process.argv[2];
@@ -23,12 +20,7 @@ switch (action) {
         my_tweets();
         break;
     case "spotify-this-song":
-        if (input_argv) {
-            spotify_this_song();
-        } else {
-            var song = "The Sign"
-            spotify_this_song(song);
-        }
+        spotify_this_song();
         break;
     case "movie-this":
         movie_this();
@@ -36,28 +28,11 @@ switch (action) {
     case "do-what-it-says":
         do_what_it_says();
         break;
-
-    //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$------TESTING------$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-    case "test":
-    test();
-    break;
 }
 
-function test() {
-    var testRequire = require("./keys.js")
-    console.log(testRequire);
-}
-//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$------TESTING------$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 //-----------------TWITTER--------------------------------------
 function my_tweets() {  
-    var client = new Twitter({
-        consumer_key: "fWWXtFuW89K9ALfpBmyBac31Y",
-        consumer_secret: "yLajimAO4gTJhSjh5SFbRdKgEl7lZHGjlJjgU8qFYGSCigvby5",
-        access_token_key: "949006103173623809-dqhaoXNRMu22wpzCILJbdl2QawrH4PD",
-        access_token_secret: "gi11gLf7Rlya1dbuLMzpvlUGChNjAk4RWn4bifyEExvOi" 
-    });
-    //var client = new Twitter(keys.twitter);
 
     var params = {
         q: "#nodejs",
@@ -72,6 +47,7 @@ function my_tweets() {
                 console.log(tweets[i].created_at);
                 console.log(tweets[i].text);
                 console.log("------------------------------------------------")
+
             }
         }else {
 
@@ -82,14 +58,19 @@ function my_tweets() {
 //--------------------------------SPOTIFY--------------------------------------
 function spotify_this_song(song) {
     var input = [];
+    var songName = "";
 
     // combines user input to a string with "+" as seperators
-    for (var i = 3; i < process.argv.length; i++) {
-        input += process.argv[i] + " ";
+    if (!process.argv[3]) {
+        songName = "the sign Ace of Base"
+    }else {
+        for (var i = 3; i < process.argv.length; i++) {
+            input += process.argv[i] + " ";
+        }
+        var inputTRIM = input.trim();
+        songName = input.trim().split(" ").join("+");
     }
-    var inputTRIM = input.trim();
-    var songName = input.trim().split(" ").join("+");
-    // console.log(songName);
+
 
     spotify.search(
         {type: "track",
@@ -112,6 +93,13 @@ function spotify_this_song(song) {
             console.log("ALBUM: " + album);
             console.log("SPOTIFY LINK: " + songURL);
 
+            fs.appendFile("random.txt", "spotify-this-song: " + songName, function(err) {
+                if (err) {
+                    console.log(err);
+                }
+            })
+            
+
         }
         
     );
@@ -121,16 +109,22 @@ function spotify_this_song(song) {
 //------------------------------------OMDB-----------------------------------------
 function movie_this() {
     var input = [];
+    var movieName = "";
 
-    // combines user input to a string with "+" as seperators
-    for (var i = 3; i < process.argv.length; i++) {
-        input += process.argv[i] + " ";
+    if (!process.argv[3]) {
+        movieName = "Mr+Nobody";
+        console.log("If you haven't watched 'Mr. Nobody,' then you should");
+        console.log("It's on Netflix");
+    }else {
+        // combines user input to a string with "+" as seperators
+        for (var i = 3; i < process.argv.length; i++) {
+            input += process.argv[i] + " ";
+        }
+        var inputTRIM = input.trim();
+        var movieName = inputTRIM.split(" ").join("+");
     }
-    var inputTRIM = input.trim();
-    var movieName = inputTRIM.split(" ").join("+");
-    
 
-    //#######################----MOVE-API-KEY-TO-ENV-FILE-----########
+
     var queryURL = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
     
 
@@ -142,7 +136,6 @@ function movie_this() {
         var body = JSON.parse(body);
         var title = body.Title;
         var year = body.Year;
-        //################-----update so its not calling on the index number------####
         var OMDBrating = body.Ratings[0].Value;
         var RTratting = body.Ratings[1].Value;
         var lang = body.Language;
@@ -164,5 +157,13 @@ function movie_this() {
 
 //------------------------------------------------ASSISTANT------------------------------------
 function do_what_it_says() {
-
+    fs.readFile("random.txt", "utf8", function(err, data) {
+        if(err) {
+            console.log("Error: " + err);
+        }else {
+            console.log(data);
+            var dataArr = data.split(",");
+            console.log(dataArr);
+        }
+    })
 }
