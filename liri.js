@@ -44,10 +44,25 @@ function my_tweets() {
         if (!error) {
             console.log("------------Recent Tweets-----------------------")
             for (var i = 0; i < tweets.length; i++) {
-                console.log(tweets[i].created_at);
-                console.log(tweets[i].text);
+                // console.log(tweets[i].created_at);
+                // console.log(tweets[i].text);
+                // console.log("------------------------------------------------")
+
+                var tweetDate = tweets[i].created_at;
+                var tweet = tweets[i].text;
+
+                var results_tweet = 
+                "Date: " + tweetDate + "\r\n" + 
+                "Tweet: " + tweet + "\r\n";
+
+                console.log(results_tweet);
                 console.log("------------------------------------------------")
 
+                fs.appendFile("random.txt", results_tweet, function(err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
             }
         }else {
 
@@ -80,18 +95,27 @@ function spotify_this_song(song) {
                 console.log("Error occurred: " + err);
                 return;
             }
+            //console.log(JSON.stringify(data, null, 2));
 
             var path = data.tracks.items[0];
-            var artist = path.artists[0].name;
-            var title = path.name;
-            var songID = path.id;
-            var album = path.album.name;
-            var songURL = "https://open.spotify.com/track/" + songID
+            // var artist = path.artists[0].name;
+            // var title = path.name;
+            // var songID = path.id;
+            // var album = path.album.name;
+            // var songURL = "https://open.spotify.com/track/" + songID
 
-            console.log("ARTIST: " + artist);
-            console.log("SONG NAME: " + title);
-            console.log("ALBUM: " + album);
-            console.log("SPOTIFY LINK: " + songURL);
+            // console.log("ARTIST: " + artist);
+            // console.log("SONG NAME: " + title);
+            // console.log("ALBUM: " + album);
+            // console.log("SPOTIFY LINK: " + songURL);
+
+            var results_spotify = 
+                "Artist: " + path.artists[0].name + "\r\n" + 
+                "Title: " + path.name + "\r\n" + 
+                "Album: " + path.album.name + "\r\n" +
+                "Song Link: " + "https://open.spotify.com/track/" + path.id + "\r\n";
+
+            console.log(results_spotify);
 
             fs.appendFile("random.txt", "spotify-this-song: " + songName, function(err) {
                 if (err) {

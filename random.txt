@@ -1,1 +1,19 @@
-spotify-this-song: the+signspotify-this-song: the signspotify-this-song: the sign Ace of Base
+spotify-this-song: the+signspotify-this-song: the signspotify-this-song: the sign Ace of BaseDate: Mon Jan 08 23:01:26 +0000 2018
+Tweet: Q: How do you comfort a JavaScript bug?
+A: You console it.
+Date: Mon Jan 08 22:45:51 +0000 2018
+Tweet: Q: How many programmers does it take to change a light bulb?
+A: None, that's a hardware problem.
+Date: Sun Jan 07 01:50:13 +0000 2018
+Tweet: Q: Why was the JavaScript developer sad?
+A: Because he didn't Node how to Express himself
+Date: Mon Jan 08 23:01:26 +0000 2018
+Tweet: Q: How do you comfort a JavaScript bug?
+A: You console it.
+Date: Mon Jan 08 22:45:51 +0000 2018
+Tweet: Q: How many programmers does it take to change a light bulb?
+A: None, that's a hardware problem.
+Date: Sun Jan 07 01:50:13 +0000 2018
+Tweet: Q: Why was the JavaScript developer sad?
+A: Because he didn't Node how to Express himself
+spotify-this-song: georgiaspotify-this-song: georgiaspotify-this-song: redspotify-this-song: redspotify-this-song: blue
