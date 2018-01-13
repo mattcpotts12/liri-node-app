@@ -1,6 +1,8 @@
 //read and set any environment variables with the dotenv package
 require("dotenv").config();
 
+var inquirer = require("inquirer");
+
 var keys = require("./keys.js");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
@@ -95,27 +97,48 @@ function spotify_this_song(song) {
                 console.log("Error occurred: " + err);
                 return;
             }
-            //console.log(JSON.stringify(data, null, 2));
+            //console.log(JSON.stringify(data.tracks.items[0], null, 2));
+            
+            var songList = [];
+
+            for (var j = 0; j < data.tracks.items.length; j++) {
+                var newArtist = data.tracks.items[j].artists[0].name;
+                var newSong = data.tracks.items[j].name;
+                songList.push(newSong + " by: " + newArtist);
+                
+            }
+            //console.log(songList);
+            
 
             var path = data.tracks.items[0];
-            // var artist = path.artists[0].name;
-            // var title = path.name;
-            // var songID = path.id;
-            // var album = path.album.name;
-            // var songURL = "https://open.spotify.com/track/" + songID
 
-            // console.log("ARTIST: " + artist);
-            // console.log("SONG NAME: " + title);
-            // console.log("ALBUM: " + album);
-            // console.log("SPOTIFY LINK: " + songURL);
+            inquirer.prompt([
+                {
+                    name: "songs",                    
+                    type: "rawlist",
+                    message: "Select song below that matches searched results",
+                    choices: songList 
+                }
+            ]).then(function(answers) {
+                for (var i = 0; i < data.tracks.items.length; i++) {
+                    var song = data.tracks.items[i].name;
+                    var artist = data.tracks.items[i].artists[0].name;
+                    var track = song + " by: " + artist;
+                    if (track === answers.songs) {
+                        var path = data.tracks.items[i];
 
-            var results_spotify = 
-                "Artist: " + path.artists[0].name + "\r\n" + 
-                "Title: " + path.name + "\r\n" + 
-                "Album: " + path.album.name + "\r\n" +
-                "Song Link: " + "https://open.spotify.com/track/" + path.id + "\r\n";
+                        var results_spotify = 
+                            "----------SPOTIFY RESULTS---------" +
+                            "\nArtists: " + path.artists[0].name + 
+                            "\nSong Title: " + path.name + 
+                            "\nAlbum: " + path.album.name + 
+                            "\nSong Link: " + "https://open.spotify.com/track/" + path.id + 
+                            "\n-----------------------------------";
+                    }                
+                }
+                console.log(results_spotify);                                               
+            })
 
-            console.log(results_spotify);
 
             fs.appendFile("random.txt", "spotify-this-song: " + songName, function(err) {
                 if (err) {
@@ -154,8 +177,9 @@ function movie_this() {
 
     request(queryURL, function(error, response, body) {
         if (!error && response.statusCode === 200) {
-            //console.log(body);
+            console.log(body);
         }
+        console.log(queryURL);
 
         var body = JSON.parse(body);
         var title = body.Title;
