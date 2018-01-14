@@ -44,7 +44,7 @@ function my_tweets() {
     };
     client.get("statuses/user_timeline", params, function(error, tweets, response) {
         if (!error) {
-            console.log("------------Recent Tweets-----------------------")
+            console.log("\n------------Recent Tweets-----------------------")
             for (var i = 0; i < tweets.length; i++) {
                 // console.log(tweets[i].created_at);
                 // console.log(tweets[i].text);
@@ -54,17 +54,22 @@ function my_tweets() {
                 var tweet = tweets[i].text;
 
                 var results_tweet = 
-                "Date: " + tweetDate + "\r\n" + 
-                "Tweet: " + tweet + "\r\n";
+                    "Date: " + tweetDate + "\r\n" + 
+                    "Tweet: " + tweet;
 
                 console.log(results_tweet);
-                console.log("------------------------------------------------")
+                console.log("\n------------------------------------------------\n")
 
-                fs.appendFile("random.txt", results_tweet, function(err) {
-                    if (err) {
-                        console.log(err);
+                fs.appendFile(
+                    "random.txt", 
+                    "my-tweets:"+ "\r\n" + 
+                    results_tweet + "\r\n", 
+                    function(err) {
+                        if (err) {
+                            console.log(err);
+                        }
                     }
-                });
+                );
             }
         }else {
 
@@ -99,16 +104,13 @@ function spotify_this_song(song) {
             }
             //console.log(JSON.stringify(data.tracks.items[0], null, 2));
             
+            //creates an array of all of the songs found from CLI search
             var songList = [];
-
             for (var j = 0; j < data.tracks.items.length; j++) {
                 var newArtist = data.tracks.items[j].artists[0].name;
                 var newSong = data.tracks.items[j].name;
                 songList.push(newSong + " by: " + newArtist);
-                
             }
-            //console.log(songList);
-            
 
             var path = data.tracks.items[0];
 
@@ -129,22 +131,29 @@ function spotify_this_song(song) {
 
                         var results_spotify = 
                             "----------SPOTIFY RESULTS---------" +
-                            "\nArtists: " + path.artists[0].name + 
-                            "\nSong Title: " + path.name + 
-                            "\nAlbum: " + path.album.name + 
-                            "\nSong Link: " + "https://open.spotify.com/track/" + path.id + 
+                            "\n Artists: " + path.artists[0].name + 
+                            "\n Song Title: " + path.name + 
+                            "\n Album: " + path.album.name + 
+                            "\n Song Link: " + "https://open.spotify.com/track/" + path.id + 
                             "\n-----------------------------------";
                     }                
                 }
-                console.log(results_spotify);                                               
+                console.log(results_spotify);    
+
+                fs.appendFile(
+                    "random.txt", 
+                    "spotify-this-song: " + songName + "\r\n" +
+                    "Results: " + results_spotify + "\r\n", 
+                    function(err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }
+                )
             })
 
 
-            fs.appendFile("random.txt", "spotify-this-song: " + songName, function(err) {
-                if (err) {
-                    console.log(err);
-                }
-            })
+
             
 
         }
